@@ -10,6 +10,58 @@
 - 플러터는 배우기 쉽고, 모든 코드가 오픈 되어 있어 세부적인 제어도 가능하다.
 - 플러터는 자바스크립트 기반의 크로스 플랫폼과 달리 자바스크립트 브리지를 발생시키지 않는다. 웹뷰로 구현할때의 DOM 성능이슈도 존재하지 않는다. 자체 렌더링 엔진을 탑재하고 있어 네이티브와 바로 소통하며 화면의 모든 픽셀을 직접 제어한다.
 - 플러터는 테스트가 용이하다
+- 플러터는 작은 컴포넌트(위젯)를 조합해 모바일 UI를 만든다.
+- 스타일, 애니메이션, 리스트, 텍스트, 버튼, 페이지 등 UI를 구성하는 모든 것이 위젯이다. (플러터의 APP객체도 위젯)
+- 플러터는 작은 위젯을 조합하는 방법으로 커스텀 위젯을 만든다.
+    ```dart
+    // 상속 방법 🚫
+    class AddToCartButton extends Button {} 
+
+    // 조합 방법 🟢
+    class AddToCartButton extends StatelessWidget {
+        @overrid
+        build() {
+            return Center(
+                child: Button(
+                    child: Text('Add to Cart')
+                )
+            );
+        }
+    } 
+    ```
+- 위젯은 `build()`를 포함한 다양한 생명주기 메서드와 객체 맴버를 포함한다.
+- 위젯은 `StateFulWidget`과 `StatelessWidget`이 있다.
+- `StatelessWidget`은 정보를 저장하지 않는 위젯으로, 생명주기를 프레임워크가 관리한다. (제거, 리빌드 등)
+- `StatelessWidget`도 정보가 변경되면 다시 그려진다. <!--정보를 저장하지는 않지만 정보를 가지고 있고 이 정보가 변경되면 리빌드됨-->
+- `StatefulWidget`은 `State` 객체를 가지고 정보를 저장하며 `setState()` 함수를 호출하여 정보 변경 및 위젯을 다시 그려야함을 알린다.
+    ```Dart
+    Widget build(BuildContext context) {
+        return IconButton(
+            icon: Icons.add,
+            onPressed: () {
+                setState(() {
+                    this.quntity++;
+                });
+            }
+        )
+    }
+    ```
+
+###### StatefulWidget의 생명주기
+ ![StatefulWidget의 생명주기](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FzG45G%2Fbtrv45wNche%2FJJqA7K0w6FSRMAdnNCApY0%2Fimg.png)
+ 이미지 출처: [[flutter] 플러터 StatefulWidget 라이프 사이클 (lifecycle)](https://fronquarry.tistory.com/16)
+1. 페이지로 이동하면 플러터가 객체를 만들고 이 객체는 위젯과 관련된 `State` 객체를 만든다.
+2. 위젯이 마운트되면 플러터가 `initState`를 호출한다[^1].
+3. 상태를 초기화하면 플러터가 위젯을 빌드한다. 그 결과 화면에 위젯을 그린다.
+4. 위젯은 세가지 이벤트 중 하나를 기다린다.
+    - 사용자가 앱의 다른화면으로 이동하면서 화면을 폐기(Dispose)한다
+    - 트리의 다른 위젯이 갱신되면서 위젯이 의존하는 설정이 바뀜. 위젯의 상태는 `didUpdateWidget`을 호출하며 필요하다면 위젯을 다시 그림. 예를 들면 트리의 상위 위젯에서 해당 위젯의 버튼을 비활성화하는 경우
+    - 사용자가 버튼을 눌러 `setState`를 호출해 위젯의 내부 상태가 갱신되어 플러터가 위젯을 다시 빌드하고 그리는 상황인 경우
+   
+[^1]: 위젯이 마운트(Mount) 된다는 것은, Flutter에서 해당 위젯이 위젯 트리에 추가되어 렌더링 준비를 마쳤다는 것을 의미한다. 쉽게 말해, 화면에 나타나거나 나타날 준비가 된 상태.  
+  
+  
+
 
 ##### Chapter2. 다트
 - 플러터는 다트 언어를 사용한다.
@@ -24,7 +76,11 @@
 
 
  
-  
+
+    
+
+
+
     
 
 ##### Chapter3. 플러터의 세계로
