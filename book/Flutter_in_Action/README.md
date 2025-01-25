@@ -102,16 +102,42 @@
 - `print('Hello, ${name}')` 과 같은 형태를 채움(Interpolation) 기능이라 한다.
 - final과 const는 모두 변수의 값을 바꿀 수 없게 하는데, const는 컴파일 이후로 항상 같은 값을 갖게하고 final은 클래스 수준에서 변수를 한번만 할당하고 변경할 수 없게 한다.
 - 다트에서 함수도 객체이며 Function이라는 형식을 갖는다. 함수를 인수로 전달하거나 함수에서 함수로 반환할 수 있다.[^3]
+- 물리적 물체뿐만 아니라 개념, 이벤트, 논리적 형용사의 그룹 등 모든 것이 사물이다. 모든 사물을 클래스로 만들 수 있다. 필자는 확신이 서지 않으면 새 클래스를 만드는 것을 규칙으로 한다. 
+- 이벤트를 클래스로 만들면 다트의 형식을 더 효과적이고 안전하게 만든다. 
+- 클래스를 정의할 때, 지나치게 구체적인 동작이나 사물을 묘사하는 이름을 피하고, 보다 일반적이고 포괄적인 이름을 사용하는 것이 좋다. ExchangeMoney(환전)보다는 Transaction(거래)라는 이름을 사용하는 것이 재사용성과 확장성에 유리하다.
+    ```Dart
+    class TransactionEvent {}
+    ```
+- 다트에서는 객체 생성시에 컴파일러가 자동으로 new나 const 키워드를 추론하기 때문에 해당 키워드들은 생략할 수 있다.
+- 클래스 생성자에는 기본 생성자, factory 생성자(매번 새로운 인스턴스를 생성하지 않고 기존 인스턴스를 반환하거나, 서브클래스의 인스턴스를 반환), 지정 생성자(오버로딩 생성자)가 있다.
+    ```Dart
+    class Energy {
+        int joules;
 
- [^3]: 이를 고차 함수(high-order function)라한다. 고차함수를 통해 추상화를 보다 쉽게 로직을 추상화 할 수 있다.
+        // 기본 생성자
+        Energy(this.joules);
 
-    
+        // 지정 생성자
+        Energy.fromWind(int windBlows) {
+            final joules = _convertWindToEnergy(windBlows);
+            return Energy(joules);
+        }
 
+        // factory 생성자
+        factory Energy.fromSolar(int sunbeams) {
+            if (appState.solarEnergy != null) return appState.solarEnergy;
+            final joules = _convertSunbeamsToJoules(sunbeams);
+            return appState.solarEnergy = Energy(joules);
+        }
+    }
+    ```
+- 열거형 (enum)을 사용하면 간단하게 형식 안정성을 확보할 수 있다.
 
-
+[^3]: 이를 고차 함수(high-order function)라한다. 고차함수를 통해 추상화를 보다 쉽게 로직을 추상화 할 수 있다.
     
 
 #### Chapter3. 플러터의 세계로
+
 
 
 
@@ -133,3 +159,12 @@
 
 
 ### PART5. 부록
+
+### PART6. 단어장
+1. 프로퍼티
+2. 최상위 수준 변수
+3. 정적 메서드
+4. 전역 변수
+5. 고차함수
+6. 지정 생성자
+7. 컴포넌트
